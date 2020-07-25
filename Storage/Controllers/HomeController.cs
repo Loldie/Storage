@@ -79,10 +79,12 @@ namespace Storage.Controllers
 
                 }
 
-                StorageFile storageFile = new StorageFile { ContentType = uploadedFile.ContentType, Data = fileData, Name = uploadedFile.FileName, HashCode = hashCode };
+                StorageFile storageFile = new StorageFile { ContentType = uploadedFile.ContentType, Name = uploadedFile.FileName, HashCode = hashCode };
+                FileBlob fileBlob = new FileBlob { Blob = fileData, StorageFile = storageFile };
                 UserStorageFileEntry userStorageNewFileEntry = new UserStorageFileEntry { StorageFile = storageFile, UserName = User.Identity.Name };
 
                 db.StorageFiles.Add(storageFile);
+                db.FileBlobs.Add(fileBlob);
                 db.UserStorageFileEntries.Add(userStorageNewFileEntry);
                 db.SaveChanges();
                 
@@ -93,9 +95,9 @@ namespace Storage.Controllers
         [HttpPost]
         public IActionResult DownloadFile(int fileId)
         {
-            StorageFile downloadFile = db.StorageFiles.FirstOrDefault(s => s.Id == fileId);
+            StorageFile downloadFile = db.StorageFiles.Include(s => s.FileBlob).FirstOrDefault(s => s.Id == fileId);
 
-            return File(downloadFile.Data, downloadFile.ContentType, downloadFile.Name);
+            return File(downloadFile.FileBlob.Blob, downloadFile.ContentType, downloadFile.Name);
         }
 
         [HttpPost]

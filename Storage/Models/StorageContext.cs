@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Storage.Models
     {
         public DbSet<StorageFile> StorageFiles { get; set; }
         public DbSet<UserStorageFileEntry> UserStorageFileEntries { get; set; }
+        public DbSet<FileBlob> FileBlobs { get; set; }
 
         public StorageContext(DbContextOptions<StorageContext> options)
             : base(options)

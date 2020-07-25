@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Storage.Models
@@ -9,13 +11,16 @@ namespace Storage.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         public string ContentType { get; set; }
 
-        public byte[] Data { get; set; }
-
+        [Required]
         public byte[] HashCode { get; set; }
+
+        public FileBlob FileBlob { get; set; }
 
         public List<UserStorageFileEntry> UserStorageFileEntries { get; set; }
     }
