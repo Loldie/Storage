@@ -37,7 +37,7 @@ namespace Storage.Controllers
                 }).OrderByDescending(s => s.UploadDate).ToList().GroupBy(s => s.UploadDate.Date).Select(s => new DayFilesListViewModel
                 {
                     Date = s.Key,
-                    storageFileModels = s.Select(p => p)
+                    storageFileModels = s.Select(p => p).ToList()
                 });
                 
      
@@ -47,6 +47,10 @@ namespace Storage.Controllers
         [HttpPost]
         public IActionResult AddFile(IFormFileCollection uploads)
         {
+
+            DayFilesListViewModel newFiles = new DayFilesListViewModel() { storageFileModels = new List<StorageFileModel>() };
+
+
             foreach (var uploadedFile in uploads)
             {
                 
@@ -74,8 +78,9 @@ namespace Storage.Controllers
                         UserStorageFileEntry userStorageOldFileEntry = new UserStorageFileEntry { StorageFile = existFile, UserName = User.Identity.Name };
                         db.UserStorageFileEntries.Add(userStorageOldFileEntry);
                         db.SaveChanges();
+                        newFiles.storageFileModels.Add(new StorageFileModel { Id = existFile.Id, Name = existFile.Name, UploadDate = userStorageOldFileEntry.UploadDate });
                     }
-                    return RedirectToAction("Index");
+                    continue;
 
                 }
 
@@ -87,9 +92,15 @@ namespace Storage.Controllers
                 db.FileBlobs.Add(fileBlob);
                 db.UserStorageFileEntries.Add(userStorageNewFileEntry);
                 db.SaveChanges();
-                
+                newFiles.storageFileModels.Add(new StorageFileModel { Id = storageFile.Id, Name = storageFile.Name, UploadDate = userStorageNewFileEntry.UploadDate });
+
             }
-            return RedirectToAction("Index");
+
+            if (newFiles.storageFileModels.Count() != 0)
+            {
+                newFiles.Date = newFiles.storageFileModels.First().UploadDate.Date;
+            }
+            return PartialView(newFiles);
         }
 
         [HttpPost]

@@ -7,7 +7,7 @@ namespace Storage.ViewModels
 {
     public class DayFilesListViewModel
     {
-        public IEnumerable<StorageFileModel> storageFileModels { get; set; }
+        public List<StorageFileModel> storageFileModels { get; set; }
 
         public DateTime Date { get; set; }
     }

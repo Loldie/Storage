@@ -1,0 +1,11 @@
+﻿@foreach (var el in Model.storageFileModels)
+{
+    <form method="post" asp-controller="Home">
+        <div class="form-group row">
+            <label class="col-6">@el.Name</label>
+            <label class="col">Загружен: @el.UploadDate</label>
+            <input type="submit" class="col-1 btn btn-secondary" asp-action="DownloadFile" asp-route-fileId="@el.Id" value="Cкачать" />
+            <input type="submit" class="ml-1 col-1 btn btn-secondary" asp-action="DeleteFile" asp-route-fileId="@el.Id" value="Удалить" />
+        </div>
+    </form>
+}
